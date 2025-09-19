@@ -1,7 +1,7 @@
 {
-  "name": "persistent-atom",
+  "name": "@sebastianjarsve/persistent-atom",
   "version": "1.0.0",
-  "description": "A utility to create persistent Nanostores atoms for Raycast extensions.",
+  "description": "A utility for creating persistent Nanostores atoms. It uses a flexible storage adapter system and includes pre-built adapters for the Raycast API. ",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -11,7 +11,7 @@
   },
   "keywords": [],
   "author": "Sebastian Jarsve",
-  "license": "ISC",
+  "license": "Beerware license",
   "packageManager": "pnpm@10.16.1",
   "devDependencies": {
     "@types/node": "latest",
