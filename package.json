@@ -1,0 +1,27 @@
+{
+  "name": "persistent-atom",
+  "version": "1.0.0",
+  "description": "A utility to create persistent Nanostores atoms for Raycast extensions.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "prepare": "pnpm run build",
+    "test": "vitest"
+  },
+  "keywords": [],
+  "author": "Sebastian Jarsve",
+  "license": "ISC",
+  "packageManager": "pnpm@10.16.1",
+  "devDependencies": {
+    "@types/node": "latest",
+    "@types/react": "latest",
+    "nanostores": "latest",
+    "picomatch": "latest",
+    "typescript": "latest",
+    "vitest": "latest"
+  },
+  "dependencies": {
+    "@raycast/api": "^1.103.1"
+  }
+}
