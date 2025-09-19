@@ -2,6 +2,16 @@
   "name": "@sebastianjarsve/persistent-atom",
   "version": "1.0.0",
   "description": "A utility for creating persistent Nanostores atoms. It uses a flexible storage adapter system and includes pre-built adapters for the Raycast API. ",
+  "exports": {
+    ".": "./dist/index.js",
+    "./adapters": "./dist/storage-adapters/index.js"
+  },
+  "typesVersions": {
+    "*": {
+      ".": ["./dist/index.d.ts"],
+      "adapters": ["./dist/storage-adapters/index.d.ts"]
+    }
+  },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -21,7 +31,8 @@
     "typescript": "latest",
     "vitest": "latest"
   },
-  "dependencies": {
-    "@raycast/api": "^1.103.1"
+  "peerDependencies": {
+    "@raycast/api": "^1.103.1",
+    "nanostores": "latest"
   }
 }
