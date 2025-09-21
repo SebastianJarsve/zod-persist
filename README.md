@@ -52,13 +52,13 @@ const $activeTheme = persistentAtom<string>('light', {
 
 ### `persistentAtom(initialValue, options)`
 
-| Option               | Type               | Required | Description                                                        |
-| :------------------- | :----------------- | :------- | :----------------------------------------------------------------- |
-| **`key`**            | `string`           | Yes      | A unique key to identify the data in the storage adapter.          |
-| **`storageAdapetr`** | `StorageAdapter`   | Yes      | The storage mechanism to use (e.g., `createFileAdapter(...)`).     |
-| **`serialize`**      | `(v: T) => string` | Yes      | A function to serialize the state to a string.                     |
-| **`deserialize`**    | `(s: string) => T` | Yes      | A function to deserialize a string back to state.                  |
-| **`debounceMs`**     | `number`           | No       | Milliseconds to debounce writes. If omitted, writes are immediate. |
+| Option            | Type               | Required | Description                                                        |
+| :---------------- | :----------------- | :------- | :----------------------------------------------------------------- |
+| **`key`**         | `string`           | Yes      | A unique key to identify the data in the storage adapter.          |
+| **`storage`**     | `StorageAdapter`   | Yes      | The storage mechanism to use (e.g., `createFileAdapter(...)`).     |
+| **`serialize`**   | `(v: T) => string` | Yes      | A function to serialize the state to a string.                     |
+| **`deserialize`** | `(s: string) => T` | Yes      | A function to deserialize a string back to state.                  |
+| **`debounceMs`**  | `number`           | No       | Milliseconds to debounce writes. If omitted, writes are immediate. |
 
 ### Storage Adapters
 

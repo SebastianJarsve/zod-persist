@@ -3,7 +3,7 @@ import { LocalStorage } from "@raycast/api";
 
 export function createLocalStorageAdapter(): StorageAdapter {
   return {
-    name: "localStorage",
+    name: "@raycast/api->LocalStorage",
     async getItem(key: string) {
       const rawValue = await LocalStorage.getItem(key);
       return rawValue === null ? null : String(rawValue);

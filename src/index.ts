@@ -1,2 +1,10 @@
-export * from "./persistent-atom";
-export * from "./storage-adapters";
+export {
+  persistentAtom,
+  exportAtomToFile,
+  importAtomFromFile,
+} from "./persistent-atom";
+export type {
+  StorageAdapter,
+  PersistentAtom,
+  Options,
+} from "./persistent-atom";

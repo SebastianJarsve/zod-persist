@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterAll } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import { StorageAdapter, persistentAtom } from "../persistent-atom";
 import { afterEach } from "node:test";
 
@@ -35,7 +35,7 @@ describe("persistentAtom", () => {
   it("should call storage.setItem when a value is set", async () => {
     const myAtom = persistentAtom("initial", {
       key: "test-key",
-      storageAdapter: mockStorage,
+      storage: mockStorage,
       serialize: (v) => v,
       deserialize: (s) => s,
     });
@@ -55,7 +55,7 @@ describe("persistentAtom", () => {
 
     const myAtom = persistentAtom("initial", {
       key: "existing-key",
-      storageAdapter: mockStorage,
+      storage: mockStorage,
       serialize: JSON.stringify,
       deserialize: JSON.parse,
     });
@@ -71,7 +71,7 @@ describe("persistentAtom", () => {
   it("should call storage.setItem when a value is set", async () => {
     const myAtom = persistentAtom(1, {
       key: "test-storage",
-      storageAdapter: mockStorage,
+      storage: mockStorage,
       serialize: JSON.stringify,
       deserialize: JSON.parse,
     });
@@ -84,7 +84,7 @@ describe("persistentAtom", () => {
     mockStorage.state["existing-key"] = '"hydrated-value"';
     const myAtom = persistentAtom("initial", {
       key: "existing-key",
-      storageAdapter: mockStorage,
+      storage: mockStorage,
       serialize: JSON.stringify,
       deserialize: JSON.parse,
     });
@@ -107,7 +107,7 @@ describe("persistentAtom", () => {
     it("should only write once for multiple rapid set calls", async () => {
       const myAtom = persistentAtom(0, {
         key: "debounced-test",
-        storageAdapter: mockStorage,
+        storage: mockStorage,
         serialize: String,
         deserialize: Number,
         debounceMs: 100, // Debounce by 100ms
@@ -132,7 +132,7 @@ describe("persistentAtom", () => {
     it("should write immediately with .setAndFlush()", async () => {
       const myAtom = persistentAtom(0, {
         key: "debounced-test",
-        storageAdapter: mockStorage,
+        storage: mockStorage,
         serialize: String,
         deserialize: Number,
         debounceMs: 100,

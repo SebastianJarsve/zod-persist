@@ -2,18 +2,20 @@
   "name": "@sebastianjarsve/persistent-atom",
   "version": "1.0.0",
   "description": "A utility for creating persistent Nanostores atoms. It uses a flexible storage adapter system and includes pre-built adapters for the Raycast API. ",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "exports": {
     ".": "./dist/index.js",
-    "./adapters": "./dist/storage-adapters/index.js"
+    "./adapters": "./dist/adapters/index.js",
+    "./react": "./dist/react/index.js"
   },
   "typesVersions": {
     "*": {
       ".": ["./dist/index.d.ts"],
-      "adapters": ["./dist/storage-adapters/index.d.ts"]
+      "adapters": ["./dist/adapters/index.d.ts"],
+      "react": ["./dist/react/index.d.ts"]
     }
   },
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
     "prepare": "pnpm run build",
@@ -26,13 +28,18 @@
   "devDependencies": {
     "@types/node": "latest",
     "@types/react": "latest",
-    "nanostores": "latest",
+    "nanostores": "^1.0.1",
     "picomatch": "latest",
     "typescript": "latest",
-    "vitest": "latest"
+    "vitest": "latest",
+    "zod": "^4.1.9"
   },
   "peerDependencies": {
     "@raycast/api": "^1.103.1",
-    "nanostores": "latest"
+    "nanostores": "^1.0.1",
+    "zod": "^4.1.9"
+  },
+  "dependencies": {
+    "@nanostores/react": "^1.0.0"
   }
 }
