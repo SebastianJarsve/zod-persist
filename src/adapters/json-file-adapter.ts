@@ -5,6 +5,7 @@ import path from "node:path";
 export function createFileAdapter(filePath: string): StorageAdapter {
   return {
     name: `file:${path.basename(filePath)}`,
+    filePath: filePath,
     async getItem() {
       const buf = await fs.readFile(filePath).catch(() => undefined);
       return buf ? buf.toString() : undefined;

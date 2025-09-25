@@ -5,6 +5,7 @@ import path from "node:path";
 
 export interface StorageAdapter {
   name: string;
+  filePath?: string;
   getItem(key: string): Promise<string | null | undefined>;
   setItem(key: string, value: string): Promise<void>;
 }
@@ -70,6 +71,19 @@ export function persistentAtom<T>(
         `[persistentAtom] Failed to hydrate atom for key "${key}" with storage ${storage.name}:`,
         error,
       );
+      if (opts.storage.filePath) {
+        const backupPath = `${opts.storage.filePath}.${Date.now()}.bak`;
+        try {
+          await fs.rename(opts.storage.filePath, backupPath);
+          console.log(`Created backup of corrupted file at: ${backupPath}`);
+        } catch (backupError) {
+          console.error(
+            "Failed to create backup of corrupted file:",
+            backupError,
+          );
+        }
+      }
+
       throw error;
     }
   })().then(() => {
