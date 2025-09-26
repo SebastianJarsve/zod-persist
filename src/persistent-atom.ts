@@ -1,7 +1,5 @@
 import { atom, type WritableAtom } from "nanostores";
-import { environment } from "@raycast/api"; // Needed for the new utility functions
 import fs from "node:fs/promises";
-import path from "node:path";
 
 export interface StorageAdapter {
   name: string;
@@ -123,34 +121,4 @@ export function persistentAtom<T>(
   };
 
   return a;
-}
-
-// --- UTILITY FUNCTIONS ---
-
-/**
- * Exports the current state of a persistent atom to a specified file.
- */
-export async function exportAtomToFile<T>(
-  atom: WritableAtom<T>,
-  serialize: (v: T) => string,
-  fileName: string,
-) {
-  const serializedValue = serialize(atom.get());
-  const filePath = path.join(environment.supportPath, fileName);
-  await fs.mkdir(environment.supportPath, { recursive: true });
-  await fs.writeFile(filePath, serializedValue);
-}
-
-/**
- * Imports state from a file, overwriting the current state in the atom.
- */
-export async function importAtomFromFile<T>(
-  atom: PersistentAtom<T>,
-  deserialize: (s: string) => T,
-  fileName: string,
-) {
-  const filePath = path.join(environment.supportPath, fileName);
-  const buf = await fs.readFile(filePath);
-  const raw = buf.toString();
-  await atom.setAndFlush(deserialize(raw));
 }

@@ -1,8 +1,4 @@
-export {
-  persistentAtom,
-  exportAtomToFile,
-  importAtomFromFile,
-} from "./persistent-atom";
+export { persistentAtom } from "./persistent-atom";
 export type {
   StorageAdapter,
   PersistentAtom,
