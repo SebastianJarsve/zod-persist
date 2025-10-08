@@ -1,6 +1,16 @@
-export { persistentAtom } from "./persistent-atom";
+export { persistentAtom } from './persistent-atom'
+
+// Types
 export type {
   StorageAdapter,
   PersistentAtom,
   Options,
-} from "./persistent-atom";
+  Migration,
+} from './persistent-atom'
+
+// Adapters
+export {
+  createFileAdapter,
+  createLocalStorageAdapter,
+  type LocalStorageInterface,
+} from './adapters'

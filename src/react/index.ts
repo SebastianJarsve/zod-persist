@@ -1,1 +1,1 @@
-export { useAtom } from "./react-hook";
+export { useAtom } from './react-hook'

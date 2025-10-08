@@ -1,7 +1,7 @@
-import { PersistentAtom } from "@/persistent-atom";
-import { useStore } from "@nanostores/react";
-import { ReadableAtom } from "nanostores";
-import { useEffect, useState } from "react";
+import { PersistentAtom } from '@/persistent-atom'
+import { useStore } from '@nanostores/react'
+import { ReadableAtom } from 'nanostores'
+import { useEffect, useState } from 'react'
 
 /**
  * A type guard to check if an atom is a PersistentAtom.
@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
  */
 function isPersistentAtom<T>(atom: ReadableAtom<T>): atom is PersistentAtom<T> {
   // The check remains the same: we just look for the .ready promise.
-  return "ready" in atom;
+  return 'ready' in atom
 }
 
 /**
@@ -20,17 +20,23 @@ function isPersistentAtom<T>(atom: ReadableAtom<T>): atom is PersistentAtom<T> {
  * @returns An object with the atom's `value` and its `isHydrated` status.
  */
 export function useAtom<T>(atom: ReadableAtom<T>) {
-  const value = useStore(atom);
-  const [isHydrated, setIsHydrated] = useState(!isPersistentAtom(atom));
+  const value = useStore(atom)
+  const [isHydrated, setIsHydrated] = useState(!isPersistentAtom(atom))
+  const [error, setError] = useState<Error | null>(null)
 
   useEffect(() => {
     if (isPersistentAtom(atom)) {
-      atom.ready.then(() => {
-        // We can set the state directly once the promise resolves.
-        setIsHydrated(true);
-      });
+      atom.ready
+        .then(() => {
+          // We can set the state directly once the promise resolves.
+          setIsHydrated(true)
+        })
+        .catch((error) => {
+          if (error instanceof Error) setError(error)
+          else setError(error != null ? new Error(String(error)) : null)
+        })
     }
-  }, [atom]);
+  }, [atom])
 
-  return { value, isHydrated };
+  return { value, isHydrated, error }
 }

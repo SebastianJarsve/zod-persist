@@ -1,3 +1,6 @@
-export { createFileAdapter } from "./json-file-adapter";
-export { createLocalStorageAdapter } from "./raycast-local-adapter";
-export type { StorageAdapter } from "../persistent-atom";
+export { createFileAdapter } from './json-file-adapter'
+export {
+  createLocalStorageAdapter,
+  type LocalStorageInterface,
+} from './local-storage-adapter'
+export type { StorageAdapter } from '../persistent-atom'

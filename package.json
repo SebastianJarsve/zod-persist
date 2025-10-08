@@ -1,7 +1,13 @@
 {
-  "name": "@sebastianjarsve/persistent-atom",
+  "name": "zod-persist",
   "version": "1.0.0",
-  "description": "A utility for creating persistent Nanostores atoms. It uses a flexible storage adapter system and includes pre-built adapters for the Raycast API. ",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SebastianJarsve/zod-persist"
+  },
+  "homepage": "https://github.com/SebastianJarsve/zod-persist#readme",
+  "description": "Type-safe persistent state with Zod validation, migrations, and error recovery. Works with Nanostores and any storage backend.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
@@ -20,23 +26,40 @@
     "build": "tsc",
     "prepublishOnly": "pnpm run build",
     "prepare": "pnpm run build",
-    "test": "vitest"
+    "test": "vitest",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
-  "keywords": [],
+  "keywords": [
+    "nanostores",
+    "zod",
+    "persistence",
+    "state-management",
+    "validation",
+    "migrations",
+    "typescript",
+    "atoms"
+  ],
   "author": "Sebastian Jarsve",
   "license": "Beerware license",
   "packageManager": "pnpm@10.16.1",
   "devDependencies": {
+    "@eslint/js": "^9.37.0",
     "@types/node": "latest",
     "@types/react": "latest",
+    "eslint": "^9.37.0",
+    "eslint-config-prettier": "^10.1.8",
     "nanostores": "^1.0.1",
     "picomatch": "latest",
+    "prettier": "^3.6.2",
     "typescript": "latest",
+    "typescript-eslint": "^8.46.0",
     "vitest": "latest",
     "zod": "^4.1.9"
   },
   "peerDependencies": {
-    "@raycast/api": "^1.103.1",
     "nanostores": "^1.0.1",
     "zod": "^4.1.9"
   },

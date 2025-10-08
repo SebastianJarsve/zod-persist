@@ -1,15 +1,17 @@
-import { StorageAdapter } from "@/persistent-atom";
-import { LocalStorage } from "@raycast/api";
+import type { StorageAdapter } from '../persistent-atom'
 
-export function createLocalStorageAdapter(): StorageAdapter {
+export type LocalStorageInterface = Pick<StorageAdapter, 'getItem' | 'setItem'>
+
+export function createLocalStorageAdapter(
+  storage: LocalStorageInterface
+): StorageAdapter {
   return {
-    name: "@raycast/api->LocalStorage",
+    name: 'LocalStorage',
     async getItem(key: string) {
-      const rawValue = await LocalStorage.getItem(key);
-      return rawValue == null ? null : String(rawValue);
+      return await storage.getItem(key)
     },
-    setItem(key: string, value: string) {
-      return LocalStorage.setItem(key, value);
+    async setItem(key: string, value: string) {
+      await storage.setItem(key, value)
     },
-  };
+  }
 }
