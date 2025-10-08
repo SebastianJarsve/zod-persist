@@ -18,6 +18,7 @@
   },
   "scripts": {
     "build": "tsc",
+    "prepublishOnly": "pnpm run build",
     "prepare": "pnpm run build",
     "test": "vitest"
   },
