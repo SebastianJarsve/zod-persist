@@ -16,8 +16,6 @@ export type Options<T> = {
   storage: StorageAdapter
   debounceMs?: number
   isEqual?: (a: T, b: T) => boolean
-
-  // 🎉 New features!
   schema?: {
     safeParse: (data: unknown) =>
       | { success: true; data: T }
@@ -26,7 +24,7 @@ export type Options<T> = {
   }
   version?: number
   migrations?: Record<number, Migration>
-  onCorruption?: (error: Error) => T
+  onCorruption?: (error: Error) => Promise<T>
 }
 
 export type PersistentAtom<T> = WritableAtom<T> & {
@@ -195,7 +193,7 @@ export function persistentAtom<T>(
       // Use onCorruption handler if provided
       if (onCorruption) {
         try {
-          const fallbackData = onCorruption(error as Error)
+          const fallbackData = await onCorruption(error as Error)
           console.log(
             `[persistentAtom] Using fallback data from onCorruption handler`
           )
