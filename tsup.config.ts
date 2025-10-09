@@ -22,9 +22,15 @@ export default defineConfig({
 
   // Standard library settings
   format: ['esm'],
-  target:"esnext",
+  target: 'esnext',
   clean: true,
-  dts: true,
+  dts: {
+    compilerOptions: {
+      declarationMap: false,
+    },
+    // Use tsconfig.json as the source for type generation
+    entry: ['src/index.ts', 'src/adapters/index.ts', 'src/react/index.ts'],
+  },
   bundle: false, // Ensures internal imports are preserved
 
   // Dependencies that should NOT be bundled but resolved by the consumer's node_modules

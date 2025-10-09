@@ -1,5 +1,5 @@
 import { StorageAdapter } from '@/persistent-atom'
-import fs from 'node:fs/promises'
+import fs from 'fs/promises'
 import path from 'node:path'
 
 async function fileBackup(filePath: string) {

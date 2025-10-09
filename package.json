@@ -17,9 +17,15 @@
   },
   "typesVersions": {
     "*": {
-      ".": ["./dist/index.d.ts"],
-      "adapters": ["./dist/adapters/index.d.ts"],
-      "react": ["./dist/react/index.d.ts"]
+      ".": [
+        "./dist/index.d.ts"
+      ],
+      "adapters": [
+        "./dist/adapters/index.d.ts"
+      ],
+      "react": [
+        "./dist/react/index.d.ts"
+      ]
     }
   },
   "scripts": {
@@ -58,7 +64,7 @@
     "typescript": "latest",
     "typescript-eslint": "^8.46.0",
     "vitest": "latest",
-    "zod": "^4.1.9"
+    "zod": "^4.1.12"
   },
   "peerDependencies": {
     "nanostores": "^1.0.1",
