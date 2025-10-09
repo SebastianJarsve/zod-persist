@@ -1,4 +1,5 @@
-import { atom, type WritableAtom } from 'nanostores'
+import { atom } from 'nanostores'
+import type { WritableAtom } from 'nanostores'
 
 export interface StorageAdapter {
   name: string
