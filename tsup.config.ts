@@ -21,7 +21,8 @@ export default defineConfig({
   },
 
   // Standard library settings
-  format: ['esm', 'cjs'],
+  format: ['esm'],
+  target:"esnext",
   clean: true,
   dts: true,
   bundle: false, // Ensures internal imports are preserved
