@@ -3,7 +3,7 @@ import fs from 'node:fs/promises'
 import { z } from 'zod'
 
 import { persistentAtom, StorageAdapter } from '../index'
-import { createFileAdapter } from '../adapters/json-file-adapter'
+import { createFileAdapter } from '../adapters/file-adapter'
 
 // --- MOCK NODE.JS MODULES ONLY ---
 vi.mock('node:fs/promises', () => ({

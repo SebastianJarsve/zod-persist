@@ -1,11 +1,11 @@
 import { atom, type WritableAtom } from 'nanostores'
-import fs from 'node:fs/promises'
 
 export interface StorageAdapter {
   name: string
   filePath?: string
   getItem(this: void, key: string): Promise<string | null | undefined>
   setItem(this: void, key: string, value: string): Promise<void>
+  createBackup?: (filePath: string) => Promise<void>
 }
 
 export type Migration = (oldData: unknown) => unknown
@@ -158,12 +158,20 @@ export function persistentAtom<T>(
 
   const createBackup = async () => {
     if (storage.filePath) {
-      const backupPath = `${storage.filePath}.${Date.now()}.bak`
-      try {
-        await fs.rename(storage.filePath, backupPath)
-        console.log(`[persistentAtom] Created backup at: ${backupPath}`)
-      } catch (backupError) {
-        console.error('[persistentAtom] Failed to create backup:', backupError)
+      if (storage.createBackup && storage.filePath) {
+        try {
+          await storage.createBackup(storage.filePath)
+        } catch (backupError) {
+          console.error(
+            '[persistentAtom] Failed to create backup:',
+            backupError
+          )
+        }
+      } else if (storage.filePath) {
+        // Optional warning if filePath is set but backup method is missing
+        console.warn(
+          '[persistentAtom] Adapter defines filePath but does not provide createBackup functionality.'
+        )
       }
     }
   }

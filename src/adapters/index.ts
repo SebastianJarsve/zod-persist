@@ -1,4 +1,4 @@
-export { createFileAdapter } from './json-file-adapter'
+export { createFileAdapter } from './file-adapter'
 export {
   createLocalStorageAdapter,
   type LocalStorageInterface,

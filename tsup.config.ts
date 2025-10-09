@@ -12,7 +12,7 @@ export default defineConfig({
 
     // Adapters Entry Points (Barrel file + individual files)
     'adapters/index': 'src/adapters/index.ts',
-    'adapters/json-file-adapter': 'src/adapters/json-file-adapter.ts', // FIX for resolve error 1
+    'adapters/file-adapter': 'src/adapters/file-adapter.ts', // FIX for resolve error 1
     'adapters/local-storage-adapter': 'src/adapters/local-storage-adapter.ts', // FIX for resolve error 2
 
     // React Entry Points
