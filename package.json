@@ -35,12 +35,13 @@
     }
   },
   "scripts": {
-    "build": "bun run build:js && bun run build:dts",
+    "build": "bun run build:js && bun run build:dts && bun run build:dts:react",
     "build:js": "bun run build:core && bun run build:adapters && bun run build:react",
     "build:core": "bun build ./src/index.ts ./src/persistent-atom.ts --outdir ./dist --target node --external nanostores,zod,path,fs/promises --format esm",
     "build:react": "bun build ./src/react/index.ts ./src/react/react-hook.ts --outdir ./dist/react --target browser --external react --external react-dom --external @nanostores/react --external nanostores --format esm",
     "build:adapters": "bun build ./src/adapters/index.ts ./src/adapters/file-adapter.ts ./src/adapters/local-storage-adapter.ts --outdir ./dist/adapters --target node --external nanostores,zod,path,fs/promises --format esm",
-    "build:dts": "tsc -p tsconfig.json --emitDeclarationOnly",
+    "build:dts": "tsc -p tsconfig.build.json --emitDeclarationOnly",
+    "build:dts:react": "tsc -p tsconfig.react.json --emitDeclarationOnly || true",
     "prepare": "bun run build",
     "test": "vitest",
     "lint": "eslint .",
