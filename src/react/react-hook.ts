@@ -1,4 +1,4 @@
-import { PersistentAtom } from '@/persistent-atom'
+import { PersistentAtom } from '~/persistent-atom'
 import { useStore } from '@nanostores/react'
 import { ReadableAtom } from 'nanostores'
 import { useEffect, useState } from 'react'

@@ -1,4 +1,4 @@
-import { StorageAdapter } from '@/persistent-atom'
+import { StorageAdapter } from '~/persistent-atom'
 import fs from 'fs/promises'
 import path from 'node:path'
 
