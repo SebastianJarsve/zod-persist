@@ -146,7 +146,7 @@ describe('persistentAtom', () => {
           storage: mockStorage,
           onCorruption: (error) => {
             console.log('Corruption handled:', error.message)
-            return { status: 'recovered' }
+            return Promise.resolve({ status: 'recovered' })
           },
         }
       )
