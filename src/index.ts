@@ -9,8 +9,6 @@ export type {
 } from './persistent-atom'
 
 // Adapters
-export {
-  createFileAdapter,
-  createLocalStorageAdapter,
-  type LocalStorageInterface,
-} from './adapters'
+export { createFileAdapter, createLocalStorageAdapter } from './adapters'
+
+export type { LocalStorageInterface } from './adapters'

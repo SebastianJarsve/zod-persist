@@ -1,11 +1,12 @@
-import { atom, type WritableAtom } from 'nanostores'
-import fs from 'node:fs/promises'
+import { atom } from 'nanostores'
+import type { WritableAtom } from 'nanostores'
 
 export interface StorageAdapter {
   name: string
   filePath?: string
   getItem(this: void, key: string): Promise<string | null | undefined>
   setItem(this: void, key: string, value: string): Promise<void>
+  createBackup?: (filePath: string) => Promise<void>
 }
 
 export type Migration = (oldData: unknown) => unknown
@@ -15,8 +16,6 @@ export type Options<T> = {
   storage: StorageAdapter
   debounceMs?: number
   isEqual?: (a: T, b: T) => boolean
-
-  // 🎉 New features!
   schema?: {
     safeParse: (data: unknown) =>
       | { success: true; data: T }
@@ -25,7 +24,7 @@ export type Options<T> = {
   }
   version?: number
   migrations?: Record<number, Migration>
-  onCorruption?: (error: Error) => T
+  onCorruption?: (error: Error) => Promise<T>
 }
 
 export type PersistentAtom<T> = WritableAtom<T> & {
@@ -158,12 +157,20 @@ export function persistentAtom<T>(
 
   const createBackup = async () => {
     if (storage.filePath) {
-      const backupPath = `${storage.filePath}.${Date.now()}.bak`
-      try {
-        await fs.rename(storage.filePath, backupPath)
-        console.log(`[persistentAtom] Created backup at: ${backupPath}`)
-      } catch (backupError) {
-        console.error('[persistentAtom] Failed to create backup:', backupError)
+      if (storage.createBackup && storage.filePath) {
+        try {
+          await storage.createBackup(storage.filePath)
+        } catch (backupError) {
+          console.error(
+            '[persistentAtom] Failed to create backup:',
+            backupError
+          )
+        }
+      } else if (storage.filePath) {
+        // Optional warning if filePath is set but backup method is missing
+        console.warn(
+          '[persistentAtom] Adapter defines filePath but does not provide createBackup functionality.'
+        )
       }
     }
   }
@@ -186,7 +193,7 @@ export function persistentAtom<T>(
       // Use onCorruption handler if provided
       if (onCorruption) {
         try {
-          const fallbackData = onCorruption(error as Error)
+          const fallbackData = await onCorruption(error as Error)
           console.log(
             `[persistentAtom] Using fallback data from onCorruption handler`
           )

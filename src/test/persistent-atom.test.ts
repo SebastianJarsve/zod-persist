@@ -1,12 +1,12 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import fs from 'node:fs/promises'
+import fs from 'fs/promises'
 import { z } from 'zod'
 
 import { persistentAtom, StorageAdapter } from '../index'
-import { createFileAdapter } from '../adapters/json-file-adapter'
+import { createFileAdapter } from '../adapters/file-adapter'
 
 // --- MOCK NODE.JS MODULES ONLY ---
-vi.mock('node:fs/promises', () => ({
+vi.mock('fs/promises', () => ({
   default: {
     readFile: vi.fn(),
     writeFile: vi.fn(),
@@ -146,7 +146,7 @@ describe('persistentAtom', () => {
           storage: mockStorage,
           onCorruption: (error) => {
             console.log('Corruption handled:', error.message)
-            return { status: 'recovered' }
+            return Promise.resolve({ status: 'recovered' })
           },
         }
       )
