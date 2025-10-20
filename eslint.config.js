@@ -7,14 +7,14 @@ export default defineConfig(
   ...tseslint.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
   {
-    ignores: ['node_modules', 'dist', 'build', '*.config.js'],
+    ignores: ['node_modules', 'dist', 'build', '*.config.js', '*.config.ts'],
   },
   {
     files: ['**/*.ts'],
     extends: [...tseslint.configs.recommendedTypeChecked],
     languageOptions: {
       parserOptions: {
-        project: './tsconfig.json',
+        project: './tsconfig.eslint.json',
         tsconfigRootDir: import.meta.dirname,
       },
     },

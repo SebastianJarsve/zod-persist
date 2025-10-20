@@ -11,9 +11,21 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
-    ".": "./dist/index.js",
-    "./adapters": "./dist/adapters/index.js",
-    "./react": "./dist/react/index.js"
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./adapters": {
+      "import": "./dist/adapters/index.js",
+      "require": "./dist/adapters/index.js",
+      "types": "./dist/adapters/index.d.ts"
+    },
+    "./react": {
+      "import": "./dist/react/index.js",
+      "require": "./dist/react/index.js",
+      "types": "./dist/react/index.d.ts"
+    }
   },
   "typesVersions": {
     "*": {
@@ -23,9 +35,14 @@
     }
   },
   "scripts": {
-    "build": "tsup",
-    "prepublishOnly": "pnpm run build",
-    "prepare": "pnpm run build",
+    "build": "bun run build:js && bun run build:dts && bun run build:dts:react",
+    "build:js": "bun run build:core && bun run build:adapters && bun run build:react",
+    "build:core": "bun build ./src/index.ts ./src/persistent-atom.ts --outdir ./dist --target node --external nanostores,zod,path,fs/promises --format esm",
+    "build:react": "bun build ./src/react/index.ts ./src/react/react-hook.ts --outdir ./dist/react --target browser --external react --external react-dom --external @nanostores/react --external nanostores --format esm",
+    "build:adapters": "bun build ./src/adapters/index.ts ./src/adapters/file-adapter.ts ./src/adapters/local-storage-adapter.ts --outdir ./dist/adapters --target node --external nanostores,zod,path,fs/promises --format esm",
+    "build:dts": "tsc -p tsconfig.build.json --emitDeclarationOnly",
+    "build:dts:react": "tsc -p tsconfig.react.json --emitDeclarationOnly || true",
+    "prepare": "bun run build",
     "test": "vitest",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
@@ -52,19 +69,32 @@
     "eslint": "^9.37.0",
     "eslint-config-prettier": "^10.1.8",
     "nanostores": "^1.0.1",
+    "@nanostores/react": "^1.0.0",
     "picomatch": "latest",
     "prettier": "^3.6.2",
-    "tsup": "^8.5.0",
     "typescript": "latest",
     "typescript-eslint": "^8.46.0",
     "vitest": "latest",
-    "zod": "^4.1.9"
+    "zod": "^4.1.12"
   },
   "peerDependencies": {
     "nanostores": "^1.0.1",
     "zod": "^4.1.9"
   },
-  "dependencies": {
-    "@nanostores/react": "^1.0.0"
+  "peerDependenciesMeta": {
+    "@nanostores/react": {
+      "optional": true
+    },
+    "react": {
+      "optional": true
+    },
+    "react-dom": {
+      "optional": true
+    }
+  },
+  "optionalPeerDependencies": {
+    "@nanostores/react": "^1.0.0",
+    "react": "^17.0.0 || ^18.0.0 || ^19.0.0",
+    "react-dom": "^17.0.0 || ^18.0.0 || ^19.0.0"
   }
 }

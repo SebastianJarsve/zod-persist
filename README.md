@@ -16,12 +16,11 @@ Type-safe persistent state with Zod validation, migrations, and error recovery. 
 ## Installation
 
 ```bash
-# Assuming the package is published as 'zod-persist'
-npm install zod-persist
+npm add github:@sebastianjarsve/zod-persist
 # OR
-pnpm add zod-persist
+pnpm add github:@sebastianjarsve/zod-persist
 # OR
-yarn add zod-persist
+bun add github:@sebastianjarsve/zod-persist
 ```
 
 ## Basic Usage
