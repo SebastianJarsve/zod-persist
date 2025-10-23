@@ -14,11 +14,13 @@ export function createLocalStorageAdapter(
   }
   return {
     name: adapterName,
-    getItem(key: string) {
-      return storage.getItem(key)
+    async getItem(key: string) {
+      const value = await storage.getItem(key)
+      // Normalize null to undefined for consistency
+      return value ?? undefined
     },
-    setItem(key: string, value: string) {
-      return storage.setItem(key, value)
+    async setItem(key: string, value: string) {
+      await storage.setItem(key, value)
     },
   }
 }
