@@ -63,6 +63,10 @@ export function persistentAtom<T>(
   const a = atom<T>(initial) as PersistentAtom<T>
   let debouncer: NodeJS.Timeout | undefined
   let isFlushing = false
+  let isHydrationComplete = false
+
+  // Save the original set method before we override it
+  const baseSet = a.set.bind(a)
 
   // Enhanced serialization with versioning
   const serializeWithVersion = (value: T): string => {
@@ -132,11 +136,7 @@ export function persistentAtom<T>(
     if (schema) {
       const result = schema.safeParse(data)
       if (!result.success) {
-        const error =
-          result.error instanceof Error
-            ? result.error.message
-            : String(result.error)
-        throw new Error(`Schema validation failed: ${error}`)
+        throw result.error
       }
       return result.data
     }
@@ -175,12 +175,33 @@ export function persistentAtom<T>(
     }
   }
 
+  a.set = (next: T) => {
+    // Prevent writes before hydration
+    if (!isHydrationComplete) {
+      throw new Error(
+        `[persistentAtom] Cannot call .set() before hydration complete. ` +
+          `Await atom.ready first, or use .setAndFlush() which handles this.`
+      )
+    }
+    // Validate with schema before setting
+    if (schema) {
+      const result = schema.safeParse(next)
+      if (!result.success) {
+        throw result.error
+      }
+      next = result.data
+    }
+
+    if (isEqual && isEqual(a.get(), next)) return
+    baseSet(next)
+  }
+
   a.ready = (async () => {
     try {
       const raw = await storage.getItem(key)
       if (raw != null) {
         const data = deserializeWithValidation(raw)
-        a.set(data)
+        baseSet(data)
       }
     } catch (error) {
       console.error(
@@ -197,7 +218,7 @@ export function persistentAtom<T>(
           console.log(
             `[persistentAtom] Using fallback data from onCorruption handler`
           )
-          a.set(fallbackData)
+          baseSet(fallbackData)
           // Write the fallback data to storage
           await write(fallbackData)
           return // Successfully recovered
@@ -213,6 +234,7 @@ export function persistentAtom<T>(
       throw error
     }
   })().then(() => {
+    isHydrationComplete = true
     a.subscribe((value) => {
       if (isFlushing) return
       if (debounceMs == null) {
@@ -223,29 +245,6 @@ export function persistentAtom<T>(
       }
     })
   })
-
-  const baseSet = a.set.bind(a)
-  a.set = (next: T) => {
-    // Validate with schema before setting
-    if (schema) {
-      const result = schema.safeParse(next)
-      if (!result.success) {
-        const error: unknown = result?.error
-        if (error == null) throw new Error('Unknown validation error')
-        const errorMessage =
-          error instanceof Error ? error.message : JSON.stringify(error)
-        console.error(
-          `[persistentAtom] Schema validation failed on set:`,
-          errorMessage
-        )
-        return
-      }
-      next = result.data
-    }
-
-    if (isEqual && isEqual(a.get(), next)) return
-    baseSet(next)
-  }
 
   a.flush = async () => {
     if (debouncer) {
