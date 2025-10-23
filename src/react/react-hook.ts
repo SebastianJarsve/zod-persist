@@ -35,6 +35,13 @@ export function useAtom<T>(atom: ReadableAtom<T>) {
           if (error instanceof Error) setError(error)
           else setError(error != null ? new Error(String(error)) : null)
         })
+
+      // Cleanup: flush pending writes on unmount
+      return () => {
+        atom.flush().catch((error) => {
+          console.error('[useAtom] Failed to flush on unmount:', error)
+        })
+      }
     }
   }, [atom])
 

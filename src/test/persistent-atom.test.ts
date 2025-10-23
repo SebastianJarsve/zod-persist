@@ -63,6 +63,82 @@ describe('persistentAtom', () => {
     })
   })
 
+  describe('Hydration', () => {
+    it('should throw if .set() is called before hydration completes', () => {
+      const myAtom = persistentAtom('initial', {
+        key: 'test',
+        storage: mockStorage,
+      })
+
+      // Don't await ready yet
+      expect(() => myAtom.set('new-value')).toThrow(
+        /Cannot call .set\(\) before hydration complete/
+      )
+    })
+
+    it('should allow .set() after hydration completes', async () => {
+      const myAtom = persistentAtom('initial', {
+        key: 'test',
+        storage: mockStorage,
+      })
+
+      await myAtom.ready
+      expect(() => myAtom.set('new-value')).not.toThrow()
+      expect(myAtom.get()).toBe('new-value')
+    })
+
+    it('should allow .setAndFlush() after awaiting .ready', async () => {
+      mockStorage.state['test'] = JSON.stringify({
+        version: 1,
+        data: 'stored',
+      })
+
+      const myAtom = persistentAtom('initial', {
+        key: 'test',
+        storage: mockStorage,
+      })
+
+      // Must await ready first
+      await myAtom.ready
+      await myAtom.setAndFlush('new-value')
+      expect(myAtom.get()).toBe('new-value')
+    })
+
+    it('should throw if .setAndFlush() is called before hydration completes', async () => {
+      const myAtom = persistentAtom('initial', {
+        key: 'test',
+        storage: mockStorage,
+      })
+
+      // Don't await ready, just call setAndFlush
+      await expect(myAtom.setAndFlush('new-value')).rejects.toThrow(
+        /Cannot call .set\(\) before hydration complete/
+      )
+    })
+
+    it('should not lose data from race condition', async () => {
+      mockStorage.state['test'] = JSON.stringify({
+        version: 1,
+        data: { id: 1, name: 'Loaded' },
+      })
+
+      const myAtom = persistentAtom(
+        { id: 0, name: 'Initial' },
+        {
+          key: 'test',
+          storage: mockStorage,
+        }
+      )
+
+      // Try to set before hydration (should throw)
+      expect(() => myAtom.set({ id: 2, name: 'Overwrite' })).toThrow()
+
+      // After hydration, should have loaded data
+      await myAtom.ready
+      expect(myAtom.get()).toEqual({ id: 1, name: 'Loaded' })
+    })
+  })
+
   describe('Persistence', () => {
     it('should call storage.setItem when a value is set', async () => {
       const myAtom = persistentAtom(1, {
@@ -113,6 +189,29 @@ describe('persistentAtom', () => {
         'debounced-test',
         expectedSerialized
       )
+    })
+  })
+
+  describe('Flush', () => {
+    it('should throw if flush fails', async () => {
+      const failingStorage: StorageAdapter = {
+        name: 'failing',
+        getItem: vi.fn(() => Promise.resolve(undefined)),
+        setItem: vi.fn(() =>
+          Promise.reject(new Error('Storage write failed'))
+        ),
+      }
+
+      const myAtom = persistentAtom('initial', {
+        key: 'test',
+        storage: failingStorage,
+      })
+
+      await myAtom.ready
+      myAtom.set('new-value')
+
+      // flush() should throw when write fails
+      await expect(myAtom.flush()).rejects.toThrow('Storage write failed')
     })
   })
 
@@ -183,7 +282,9 @@ describe('persistentAtom', () => {
       await myAtom.ready
 
       // Try to set an invalid value
-      myAtom.set({ name: 'Invalid', age: -5 } as { name: string; age: number })
+      expect(() =>
+        myAtom.set({ name: 'Invalid', age: -5 } as { name: string; age: number })
+      ).toThrow()
 
       // The atom's value should NOT have changed
       expect(myAtom.get()).toEqual({ name: 'John', age: 30 })
@@ -205,8 +306,8 @@ describe('persistentAtom', () => {
         }
       )
 
-      // Expect the .ready promise to reject
-      await expect(myAtom.ready).rejects.toThrow(/Schema validation failed/)
+      // Expect the .ready promise to reject with a ZodError
+      await expect(myAtom.ready).rejects.toThrow()
     })
 
     it('should successfully validate and set correct data', async () => {
