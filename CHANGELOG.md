@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.1] - 2025-10-23
+
+### 🐛 Bug Fixes
+
+- **Critical: Race condition prevention** - Block `.set()` calls until hydration completes to prevent data loss from writes overwriting loaded state
+- **Critical: Schema validation errors** - Throw ZodError directly instead of silently failing, giving users full validation details
+- **Critical: Write error handling** - Make `write()` throw errors and catch them in subscriptions; allow `flush()` to propagate errors to caller
+- **React cleanup** - Add cleanup effect to `useAtom` hook to flush pending writes on component unmount, preventing data loss with debouncing
+- **LocalStorage adapter** - Normalize null to undefined for consistency across storage backends (browser localStorage vs Raycast LocalStorage)
+
+### Changed
+
+- `.setAndFlush()` now requires explicit `await $atom.ready` first (was previously implicit)
+- `write()` now throws errors instead of silently swallowing them
+- Both `getItem()` and `setItem()` in LocalStorage adapter are now explicitly async
+
+### Improved
+
+- Better error messages when `.set()` is called before hydration
+- Explicit error handling in all async operations
+- More robust storage adapter behavior
+
 ## [1.0.0] - 2025-10-08
 
 ### 🎉 Initial Release
