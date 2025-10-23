@@ -152,6 +152,7 @@ export function persistentAtom<T>(
         `[persistentAtom] Failed to write to ${storage.name} for key "${key}":`,
         error
       )
+      throw error
     }
   }
 
@@ -238,10 +239,22 @@ export function persistentAtom<T>(
     a.subscribe((value) => {
       if (isFlushing) return
       if (debounceMs == null) {
-        void write(value)
+        write(value).catch((error) => {
+          console.error(
+            `[persistentAtom] Failed to write to ${storage.name} for key "${key}":`,
+            error
+          )
+        })
       } else {
         if (debouncer) clearTimeout(debouncer)
-        debouncer = setTimeout(() => void write(value), debounceMs)
+        debouncer = setTimeout(() => {
+          write(value).catch((error) => {
+            console.error(
+              `[persistentAtom] Failed to write to ${storage.name} for key "${key}":`,
+              error
+            )
+          })
+        }, debounceMs)
       }
     })
   })

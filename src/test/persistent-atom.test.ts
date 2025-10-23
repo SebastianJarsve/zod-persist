@@ -192,6 +192,29 @@ describe('persistentAtom', () => {
     })
   })
 
+  describe('Flush', () => {
+    it('should throw if flush fails', async () => {
+      const failingStorage: StorageAdapter = {
+        name: 'failing',
+        getItem: vi.fn(() => Promise.resolve(undefined)),
+        setItem: vi.fn(() =>
+          Promise.reject(new Error('Storage write failed'))
+        ),
+      }
+
+      const myAtom = persistentAtom('initial', {
+        key: 'test',
+        storage: failingStorage,
+      })
+
+      await myAtom.ready
+      myAtom.set('new-value')
+
+      // flush() should throw when write fails
+      await expect(myAtom.flush()).rejects.toThrow('Storage write failed')
+    })
+  })
+
   describe('Error Handling', () => {
     it('should create a backup of a corrupted file on hydration error', async () => {
       const corruptedData = 'this-is-not-valid-json'
